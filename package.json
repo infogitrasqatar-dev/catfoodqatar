@@ -1,0 +1,16 @@
+{
+  "name": "scoops-of-joy",
+  "version": "1.0.0",
+  "description": "ScoopLand - Premium Artisan Ice Cream Shop",
+  "scripts": {
+    "dev": "serve -l 3000 .",
+    "start": "serve -l 3000 ."
+  },
+  "devDependencies": {
+    "serve": "^14.2.4",
+    "sharp": "^0.35.5"
+  },
+  "dependencies": {
+    "three": "^0.186.1"
+  }
+}

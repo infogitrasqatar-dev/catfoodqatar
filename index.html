@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ScoopLand - Premium Artisan Ice Cream</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Plaisir & Delight - Premium French Gourmet Cat & Pet Food</title>
+    <meta name="description" content="Order Les Repas Plaisir French gourmet cat food pouches, chunks in gravy, and Delight pet nutrition. Fast delivery across Qatar.">
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
+
 <body>
 
     <!-- Floating Background Decorations -->
@@ -20,17 +23,26 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="#" class="logo">
-                <div class="logo-icon">🍦</div>
-                <span class="logo-text">ScoopLand</span>
+                <div class="logo-icon">🐱</div>
+                <div class="logo-text-group">
+                    <span class="logo-text">Plaisir<span class="logo-accent">&Delight</span></span>
+                    <span class="logo-sub">Gourmet Pet Cuisine</span>
+                </div>
             </a>
 
             <ul class="nav-links" id="navLinks">
                 <li><a href="#home">Home</a></li>
-                <li><a href="#flavors">Flavors</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#reviews">Reviews</a></li>
-                <li><a href="#contact" class="nav-cta">Order Now</a></li>
+                <li><a href="#products">Products</a></li>
+                <li><a href="#nutrition">Nutrition</a></li>
+                <li><a href="#reviews">Pet Reviews</a></li>
+                <li><a href="#" id="trackOrderNavBtn">Track Order 🚚</a></li>
+                <li><a href="#products" class="nav-cta">Order Now 🐾</a></li>
             </ul>
+
+            <button class="cart-toggle-btn" id="cartToggleBtn" aria-label="Open Cart">
+                <span class="cart-icon">🛒</span>
+                <span class="cart-badge" id="cartBadge">0</span>
+            </button>
 
             <div class="hamburger" id="hamburger">
                 <span></span>
@@ -45,152 +57,320 @@
         <div class="hero-container">
             <div class="hero-content">
                 <div class="hero-badge">
-                    <span>✨</span> #1 Artisan Ice Cream Shop
+                    <span>👑</span> #1 French Gourmet Cat Food in Qatar
                 </div>
                 <h1 class="hero-title">
-                    Scoops of<br>
-                    <span class="highlight">Pure Joy</span>
+                    Tender Bites of<br>
+                    <span class="highlight">Pure Delight</span>
                 </h1>
                 <p class="hero-subtitle">
-                    Handcrafted with the finest organic ingredients, every scoop is a journey through 
-                    creamy delight. Taste the happiness in every bite.
+                    Crafted in France with succulent chunks of Atlantic Salmon, Codfish, and tender meats in savory gravy. 
+                    100% complete veterinary nutrition your cat will love.
                 </p>
                 <div class="hero-buttons">
-                    <a href="#flavors" class="btn-primary">
-                        Explore Flavors 🍨
+                    <a href="#products" class="btn-primary">
+                        Explore Gourmet Menu 🐾
                     </a>
-                    <a href="#about" class="btn-secondary">
-                        Our Story →
+                    <a href="#nutrition" class="btn-secondary">
+                        Our Nutrition Quality →
                     </a>
                 </div>
                 <div class="hero-stats">
                     <div class="stat-item">
-                        <div class="stat-number">50+</div>
-                        <div class="stat-label">Flavors</div>
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Real Meat & Fish</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-number">10K+</div>
-                        <div class="stat-label">Happy Customers</div>
+                        <div class="stat-number">15K+</div>
+                        <div class="stat-label">Happy Felines</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-number">15</div>
-                        <div class="stat-label">Years of Love</div>
+                        <div class="stat-number">0%</div>
+                        <div class="stat-label">Artificial Additives</div>
                     </div>
                 </div>
             </div>
 
-            <div class="hero-image-wrapper">
-                <img src="ice-cream-hero.png" alt="Premium Ice Cream" class="hero-image">
-                <div class="hero-decor hero-decor-1">🍓</div>
-                <div class="hero-decor hero-decor-2">⭐</div>
-                <div class="hero-decor hero-decor-3"></div>
+            <!-- Main Hero Product with 3D Scroll Rotation & Interactive Stage -->
+            <div class="hero-image-wrapper" id="heroProductShowcase">
+                <!-- Ambient Aura & Glow Rings -->
+                <div class="hero-glow-aura" id="heroGlowAura"></div>
+                <div class="hero-ring hero-ring-1"></div>
+                <div class="hero-ring hero-ring-2"></div>
+
+                <!-- 3D Perspective Stage -->
+                <div class="hero-3d-stage" id="hero3DStage">
+                    <!-- WebGL True 3D Box & Pouch Model Canvas -->
+                    <canvas id="hero3DCanvas" class="hero-3d-canvas"></canvas>
+
+                    <!-- Floating 3D Parallax Elements (Disperse on Scroll) -->
+                    <div class="floating-ingredient ing-salmon" data-depth="2.4">
+                        <span class="ing-icon">🐟</span>
+                        <span class="ing-label">Atlantic Salmon</span>
+                    </div>
+                    <div class="floating-ingredient ing-vitamin" data-depth="3.2">
+                        <span class="ing-pill">Vit E • B1 • B8</span>
+                    </div>
+                    <div class="floating-ingredient ing-taurine" data-depth="1.8">
+                        <span class="ing-pill gold">+ Taurine Care</span>
+                    </div>
+                    <div class="floating-ingredient ing-gravy" data-depth="2.8">
+                        <span class="ing-icon">🥫</span>
+                        <span class="ing-label">Rich Gravy</span>
+                    </div>
+                    <div class="floating-ingredient ing-paw" data-depth="1.5">
+                        <span class="ing-icon">🐾</span>
+                    </div>
+                    <div class="floating-ingredient ing-shrimp" data-depth="3.0">
+                        <span class="ing-icon">🦐</span>
+                    </div>
+                </div>
+
+                <!-- Floating Interactive Badge -->
+                <div class="product-badge-floating" id="heroProductBadge">
+                    <div class="badge-sparkle">✨</div>
+                    <div>
+                        <span class="badge-tag">🇫🇷 French Gourmet Selection</span>
+                        <h4 class="badge-title" id="heroBadgeTitle">Salmon & Cod in Gravy</h4>
+                        <div class="badge-meta">
+                            <span class="badge-price" id="heroBadgePrice">QAR 14.00</span>
+                            <span class="badge-rating">★★★★★ (4.9)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Flavor Selector Pills -->
+                <div class="hero-flavor-switch" id="heroFlavorSwitch">
+                    <button class="flavor-switch-btn active" data-flavor="salmon" data-img="hero-pouch-salmon.png" data-name="Salmon & Cod in Gravy" data-price="QAR 14.00" data-color="#7B1FA2">
+                        🐟 Salmon & Cod
+                    </button>
+                    <button class="flavor-switch-btn" data-flavor="beef" data-img="hero-pouch-beef.png" data-name="Beef & Turkey in Gravy" data-price="QAR 14.00" data-color="#C2185B">
+                        🥩 Beef & Turkey
+                    </button>
+                    <button class="flavor-switch-btn" data-flavor="trout" data-img="hero-pouch-trout.png" data-name="Trout & Shrimps Gravy" data-price="QAR 14.00" data-color="#00897B">
+                        🦐 Trout & Shrimps
+                    </button>
+                    <button class="flavor-switch-btn" data-flavor="chicken" data-img="hero-pouch-chicken.png" data-name="Chicken & Liver (4x100g)" data-price="QAR 14.00" data-color="#F57C00">
+                        🍗 Chicken & Liver
+                    </button>
+                </div>
+
+                <!-- 3D Rotation Hint -->
+                <div class="hero-drag-hint">
+                    <span class="hint-icon">🔄</span> Scroll down or drag to rotate 3D view
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- ===== FLAVORS SECTION ===== -->
-    <section class="flavors" id="flavors">
+    <!-- ===== PRODUCTS CATALOG SECTION ===== -->
+    <section class="flavors" id="products">
         <div class="flavors-container">
             <div class="section-header reveal">
-                <div class="section-badge">🎨 Our Collection</div>
-                <h2 class="section-title">Irresistible Flavors</h2>
+                <div class="section-badge">🥫 Gourmet Collection</div>
+                <h2 class="section-title">Wholesome Pet Nutrition</h2>
                 <p class="section-subtitle">
-                    From classic favorites to bold new creations, discover flavors 
-                    that will make your taste buds dance with delight.
+                    Select from premium French Plaisir pouches in rich gravy, complete dry kibbles, and health care essentials.
                 </p>
             </div>
 
-            <div class="flavors-grid">
-                <div class="flavor-card reveal">
+            <!-- ===== FILTERS & SEARCH ===== -->
+            <div class="filter-controls reveal">
+                <div class="search-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="flavorSearch" placeholder="Search cat food, pouches, dry food, treats...">
+                </div>
+                <div class="filter-pills" id="filterPills">
+                    <button class="filter-pill active" data-filter="all">All Items</button>
+                    <button class="filter-pill" data-filter="pouches">Pouches & Gravy</button>
+                    <button class="filter-pill" data-filter="dry">Dry Food</button>
+                    <button class="filter-pill" data-filter="dog">Dog Chunks</button>
+                    <button class="filter-pill" data-filter="care">Care & Litter</button>
+                </div>
+            </div>
+
+            <div class="flavors-grid" id="flavorsGrid">
+                
+                <!-- Product 1: Plaisir Salmon & Cod -->
+                <div class="flavor-card reveal" data-category="pouches" data-id="1" data-name="Plaisir Cat Food Salmon & Cod (4x100g)" data-price="14.00" data-image="cat-food-salmon.png">
                     <div class="flavor-card-image">
-                        <span class="flavor-tag pink">Bestseller</span>
-                        <img src="ice-cream-1.png" alt="Strawberry Dream">
+                        <span class="flavor-tag purple">⭐ Bestseller</span>
+                        <img src="cat-food-salmon.png" alt="Plaisir Salmon & Cod">
                     </div>
                     <div class="flavor-card-content">
-                        <h3>Strawberry Dream</h3>
-                        <p>Fresh organic strawberries blended with creamy vanilla base and real fruit swirls.</p>
+                        <div class="card-ref-badge">Ref: 5805 | 4x100g Box</div>
+                        <h3>Plaisir Salmon & Cod in Gravy</h3>
+                        <p>French gourmet chunks with Atlantic salmon & delicate codfish. Enriched with Vitamins E, B1 & B8 for adults & sterilised cats.</p>
                         <div class="flavor-card-footer">
-                            <span class="flavor-price">$5.99</span>
-                            <button class="flavor-btn">Add to Cart</button>
+                            <span class="flavor-price">QAR 14.00</span>
+                            <button class="flavor-btn add-to-cart-btn">Add to Cart 🛒</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="flavor-card reveal">
+                <!-- Product 2: Plaisir Beef & Turkey -->
+                <div class="flavor-card reveal" data-category="pouches" data-id="2" data-name="Plaisir Beef & Turkey in Gravy (4x100g)" data-price="14.00" data-image="cat-food-beef.png">
                     <div class="flavor-card-image">
-                        <span class="flavor-tag mint">New</span>
-                        <img src="ice-cream-2.png" alt="Mint Chill">
+                        <span class="flavor-tag coral">🥩 Top Pick</span>
+                        <img src="cat-food-beef.png" alt="Plaisir Beef & Turkey">
                     </div>
                     <div class="flavor-card-content">
-                        <h3>Mint Chill</h3>
-                        <p>Cool peppermint with dark chocolate chips, a refreshing twist on a classic combo.</p>
+                        <div class="card-ref-badge">Ref: 5760 | 4x100g Box</div>
+                        <h3>Plaisir Beef & Turkey in Gravy</h3>
+                        <p>Tender beef chunks paired with lean turkey in a savory gravy. Balanced protein profile supporting muscle tone and healthy weight.</p>
                         <div class="flavor-card-footer">
-                            <span class="flavor-price">$6.49</span>
-                            <button class="flavor-btn">Add to Cart</button>
+                            <span class="flavor-price">QAR 14.00</span>
+                            <button class="flavor-btn add-to-cart-btn">Add to Cart 🛒</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="flavor-card reveal">
+                <!-- Product 3: Plaisir Trout & Shrimps -->
+                <div class="flavor-card reveal" data-category="pouches" data-id="3" data-name="Plaisir Trout & Shrimps in Gravy (4x100g)" data-price="14.00" data-image="cat-food-trout.png">
                     <div class="flavor-card-image">
-                        <span class="flavor-tag yellow">Classic</span>
-                        <img src="ice-cream-3.png" alt="Vanilla Bean">
+                        <span class="flavor-tag teal">🐟 Seafood</span>
+                        <img src="cat-food-trout.png" alt="Plaisir Trout & Shrimps">
                     </div>
                     <div class="flavor-card-content">
-                        <h3>Vanilla Bean</h3>
-                        <p>Madagascar vanilla bean specks in our signature cream base. Simple, elegant, perfect.</p>
+                        <div class="card-ref-badge">Ref: 5805 | 4x100g Box</div>
+                        <h3>Plaisir Trout & Shrimps Gravy</h3>
+                        <p>Delicate French river trout paired with succulent shrimps in rich broth. High in natural fatty acids for silky fur.</p>
                         <div class="flavor-card-footer">
-                            <span class="flavor-price">$4.99</span>
-                            <button class="flavor-btn">Add to Cart</button>
+                            <span class="flavor-price">QAR 14.00</span>
+                            <button class="flavor-btn add-to-cart-btn">Add to Cart 🛒</button>
                         </div>
                     </div>
                 </div>
+
+                <!-- Product 4: Delight Chicken & Liver -->
+                <div class="flavor-card reveal" data-category="pouches" data-id="4" data-name="Delight Cat Food Chicken & Liver (4x100g)" data-price="14.00" data-image="cat-food-chicken.png">
+                    <div class="flavor-card-image">
+                        <span class="flavor-tag gold">🍗 Nutrient Rich</span>
+                        <img src="cat-food-chicken.png" alt="Delight Chicken & Liver">
+                    </div>
+                    <div class="flavor-card-content">
+                        <div class="card-ref-badge">Ref: 5804 | 4x100g Box</div>
+                        <h3>Delight Chicken & Liver (4x100g)</h3>
+                        <p>Tender chicken cuts combined with fresh poultry liver in smooth gravy. Packed with natural vitamins and bioavailable iron.</p>
+                        <div class="flavor-card-footer">
+                            <span class="flavor-price">QAR 14.00</span>
+                            <button class="flavor-btn add-to-cart-btn">Add to Cart 🛒</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 5: Delight 2.2 KGS Dry Cat Sea Food -->
+                <div class="flavor-card reveal" data-category="dry" data-id="5" data-name="Delight 2.2 KGS Dry Cat Sea Food" data-price="25.00" data-image="cat-food-dry.png">
+                    <div class="flavor-card-image">
+                        <span class="flavor-tag green">🌊 Dry Kibble</span>
+                        <img src="cat-food-dry.png" alt="Delight 2.2 KGS Dry Cat Sea Food">
+                    </div>
+                    <div class="flavor-card-content">
+                        <div class="card-ref-badge">Ref: 5748 | 2.2 KG Bag</div>
+                        <h3>Delight 2.2 KGS Dry Cat Sea Food</h3>
+                        <p>Complete & balanced dry ocean fish recipe. Formulated with taurine, prebiotic fibers, and Omega 3 & 6 for lifelong vitality.</p>
+                        <div class="flavor-card-footer">
+                            <span class="flavor-price">QAR 25.00</span>
+                            <button class="flavor-btn add-to-cart-btn">Add to Cart 🛒</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 6: Delight Dog Chunks with Beef -->
+                <div class="flavor-card reveal" data-category="dog" data-id="6" data-name="Delight Dog Chunks with Beef 415g" data-price="6.25" data-image="cat-food-beef.png">
+                    <div class="flavor-card-image">
+                        <span class="flavor-tag coral">🐶 Canine Favorite</span>
+                        <img src="cat-food-beef.png" alt="Delight Dog Chunks with Beef">
+                    </div>
+                    <div class="flavor-card-content">
+                        <div class="card-ref-badge">Ref: 5759 | 415g Can</div>
+                        <h3>Delight Dog Chunks with Beef 415g</h3>
+                        <p>Hearty beef chunks in succulent brown gravy. Provides daily nourishment and energy for active adult dogs.</p>
+                        <div class="flavor-card-footer">
+                            <span class="flavor-price">QAR 6.25</span>
+                            <button class="flavor-btn add-to-cart-btn">Add to Cart 🛒</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 7: Delight 1.2 KGS Dry Kitten Sea Food -->
+                <div class="flavor-card reveal" data-category="dry" data-id="7" data-name="Delight 1.2 KGS Dry Kitten Sea Food" data-price="14.50" data-image="cat-food-dry.png">
+                    <div class="flavor-card-image">
+                        <span class="flavor-tag teal">🐾 For Kittens</span>
+                        <img src="cat-food-dry.png" alt="Delight 1.2 KGS Dry Kitten Sea Food">
+                    </div>
+                    <div class="flavor-card-content">
+                        <div class="card-ref-badge">Ref: 5749 | 1.2 KG Bag</div>
+                        <h3>Delight 1.2 KGS Dry Kitten Sea Food</h3>
+                        <p>Easy-to-chew mini kibble recipe fortified with DHA, calcium, and proteins for rapid kitten growth and immune protection.</p>
+                        <div class="flavor-card-footer">
+                            <span class="flavor-price">QAR 14.50</span>
+                            <button class="flavor-btn add-to-cart-btn">Add to Cart 🛒</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 8: Delight Silica Cat Litter 4.2L -->
+                <div class="flavor-card reveal" data-category="care" data-id="8" data-name="Delight Silica Cat Litter 4.2L" data-price="36.50" data-image="cat-food-hero.png">
+                    <div class="flavor-card-image">
+                        <span class="flavor-tag purple">✨ Care Essential</span>
+                        <img src="cat-food-hero.png" alt="Delight Silica Cat Litter">
+                    </div>
+                    <div class="flavor-card-content">
+                        <div class="card-ref-badge">Ref: 5615 | 4.2 Liters</div>
+                        <h3>Delight Silica Cat Litter 4.2L</h3>
+                        <p>Premium odor-neutralizing silica crystals. High absorption power, non-tracking, and 99% dust-free for clean paws.</p>
+                        <div class="flavor-card-footer">
+                            <span class="flavor-price">QAR 36.50</span>
+                            <button class="flavor-btn add-to-cart-btn">Add to Cart 🛒</button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
 
-    <!-- ===== WHY US SECTION ===== -->
-    <section class="why-us" id="about">
+    <!-- ===== NUTRITION & QUALITY SECTION ===== -->
+    <section class="why-us" id="nutrition">
         <div class="why-us-container">
             <div class="why-us-image reveal-left">
-                <img src="ice-cream-hero.png" alt="Our Artisan Process" class="why-us-image-main">
+                <img src="cat-food-hero.png" alt="French Veterinary Quality" class="why-us-image-main">
                 <div class="why-us-floating-card">
-                    <div class="why-us-floating-icon">🏆</div>
+                    <div class="why-us-floating-icon">🇫🇷</div>
                     <div class="why-us-floating-text">
-                        <strong>Award Winning</strong>
-                        <span>Best Artisan Shop 2024</span>
+                        <strong>Made in France</strong>
+                        <span>Veterinary Formulated Standards</span>
                     </div>
                 </div>
             </div>
 
             <div class="why-us-content reveal-right">
-                <h2>Crafted With <span class="highlight">Love & Passion</span></h2>
+                <h2>Tailored For <span class="highlight">Feline Health & Joy</span></h2>
                 <p>
-                    Since 2009, we've been on a mission to create the world's most 
-                    delightful ice cream. Every batch is made from scratch using 
-                    locally-sourced organic dairy and the finest natural ingredients.
+                    Every Plaisir and Delight recipe is formulated by veterinary nutritionists to satisfy your cat's natural carnivorous cravings while supporting long-term wellness.
                 </p>
 
                 <div class="features-list">
                     <div class="feature-item">
-                        <div class="feature-icon pink">🥛</div>
+                        <div class="feature-icon purple">🐟</div>
                         <div class="feature-text">
-                            <h4>100% Organic Dairy</h4>
-                            <p>We source our milk from local grass-fed farms, ensuring the creamiest and most natural base.</p>
+                            <h4>Real Fish & Prime Meats</h4>
+                            <p>Tender chunks of wild Atlantic salmon, codfish, and farm-raised poultry packed with essential amino acids.</p>
                         </div>
                     </div>
                     <div class="feature-item">
-                        <div class="feature-icon mint">🌿</div>
+                        <div class="feature-icon coral">✨</div>
                         <div class="feature-text">
-                            <h4>Natural Ingredients Only</h4>
-                            <p>No artificial colors, flavors, or preservatives. Just pure, wholesome ingredients nature provides.</p>
+                            <h4>Vitamins E, B1 & B8 Enriched</h4>
+                            <p>Promotes a gleaming, silky coat, strengthens the immune defense, and maintains sharp feline eyesight.</p>
                         </div>
                     </div>
                     <div class="feature-item">
-                        <div class="feature-icon yellow">👨🍳</div>
+                        <div class="feature-icon gold">🛡️</div>
                         <div class="feature-text">
-                            <h4>Handcrafted Daily</h4>
-                            <p>Each batch is lovingly prepared by our master ice cream artisans every single morning.</p>
+                            <h4>Optimal Urinary & Sterilised Care</h4>
+                            <p>Balanced mineral content with controlled magnesium levels to safeguard feline kidney and urinary tract health.</p>
                         </div>
                     </div>
                 </div>
@@ -202,11 +382,10 @@
     <section class="testimonials" id="reviews">
         <div class="testimonials-container">
             <div class="section-header reveal">
-                <div class="section-badge">💬 Testimonials</div>
-                <h2 class="section-title">What People Say</h2>
+                <div class="section-badge">💬 Pet Parent Reviews</div>
+                <h2 class="section-title">Loved by Cats & Owners</h2>
                 <p class="section-subtitle">
-                    Don't just take our word for it. Hear from the thousands of ice cream lovers 
-                    who make ScoopLand their go-to treat.
+                    See why thousands of pet owners in Doha and across Qatar trust Plaisir & Delight for their daily meals.
                 </p>
             </div>
 
@@ -214,14 +393,13 @@
                 <div class="testimonial-card reveal">
                     <div class="testimonial-stars">★★★★★</div>
                     <p class="testimonial-text">
-                        "The strawberry flavor is absolutely divine! It tastes like fresh-picked berries 
-                        in every spoonful. My family's new weekend tradition."
+                        "My picky British Shorthair, Milo, licks the bowl completely clean every time I open a Plaisir Salmon & Cod pouch! The gravy quality is exceptional."
                     </p>
                     <div class="testimonial-author">
-                        <div class="testimonial-avatar a1">S</div>
+                        <div class="testimonial-avatar a1">N</div>
                         <div>
-                            <div class="testimonial-name">Sarah Johnson</div>
-                            <div class="testimonial-role">Food Blogger</div>
+                            <div class="testimonial-name">Nour Al-Kuwari</div>
+                            <div class="testimonial-role">British Shorthair Parent • Doha</div>
                         </div>
                     </div>
                 </div>
@@ -229,14 +407,13 @@
                 <div class="testimonial-card reveal">
                     <div class="testimonial-stars">★★★★★</div>
                     <p class="testimonial-text">
-                        "Best mint ice cream I've ever had! The chocolate chips are generous and 
-                        the mint flavor is perfectly balanced. Worth every penny."
+                        "Switched our sterilised Persian cat to Plaisir Beef & Turkey 2 months ago. Her coat has never been this shiny, and the delivery in Qatar was within 2 hours!"
                     </p>
                     <div class="testimonial-author">
-                        <div class="testimonial-avatar a2">M</div>
+                        <div class="testimonial-avatar a2">K</div>
                         <div>
-                            <div class="testimonial-name">Mike Chen</div>
-                            <div class="testimonial-role">Chef & Critic</div>
+                            <div class="testimonial-name">Karim Mansoor</div>
+                            <div class="testimonial-role">Persian Cat Owner • Lusail</div>
                         </div>
                     </div>
                 </div>
@@ -244,17 +421,53 @@
                 <div class="testimonial-card reveal">
                     <div class="testimonial-stars">★★★★★</div>
                     <p class="testimonial-text">
-                        "ScoopLand's vanilla bean is like a warm hug on a cold day. The real vanilla 
-                        specks make all the difference. Simply the best!"
+                        "The Delight Dry Cat Seafood 2.2kg bag is amazing value for money and our two rescue cats adore the crunch. Ordering from the website is super quick."
                     </p>
                     <div class="testimonial-author">
-                        <div class="testimonial-avatar a3">E</div>
+                        <div class="testimonial-avatar a3">F</div>
                         <div>
-                            <div class="testimonial-name">Emily Park</div>
-                            <div class="testimonial-role">Loyal Customer</div>
+                            <div class="testimonial-name">Fatima Al-Thani</div>
+                            <div class="testimonial-role">Multiple Cat Parent • The Pearl</div>
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- ===== WRITE A REVIEW ===== -->
+            <div class="write-review-container reveal">
+                <div class="write-review-header">
+                    <div class="section-badge">✍️ Feedback</div>
+                    <h3>Share Your Pet's Story</h3>
+                    <p>Have your furry companions tried Plaisir? Tell us about their favorite dish!</p>
+                </div>
+                <form id="reviewForm" class="review-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="reviewName">Your Name</label>
+                            <input type="text" id="reviewName" required placeholder="e.g. Mariam Ali">
+                        </div>
+                        <div class="form-group">
+                            <label for="reviewRole">Cat's Name & Breed (optional)</label>
+                            <input type="text" id="reviewRole" placeholder="e.g. Leo (Scottish Fold)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Rating</label>
+                        <div class="star-rating-input" id="starRatingInput">
+                            <span class="star-input" data-rating="1">★</span>
+                            <span class="star-input" data-rating="2">★</span>
+                            <span class="star-input" data-rating="3">★</span>
+                            <span class="star-input" data-rating="4">★</span>
+                            <span class="star-input active" data-rating="5">★</span>
+                        </div>
+                        <input type="hidden" id="selectedRating" value="5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reviewText">Your Review</label>
+                        <textarea id="reviewText" required placeholder="Describe your pet's reaction, coat health, delivery experience..."></textarea>
+                    </div>
+                    <button type="submit" class="submit-review-btn">Submit Review ⭐</button>
+                </form>
             </div>
         </div>
     </section>
@@ -264,9 +477,9 @@
         <div class="cta-container">
             <div class="cta-box reveal">
                 <div class="cta-content">
-                    <h2>Ready for a Scoop?</h2>
-                    <p>Order your favorite flavors online and get free delivery on your first order. Happiness is just a click away!</p>
-                    <a href="#" class="cta-btn">Order Now 🛒</a>
+                    <h2>Treat Your Pet to Gourmet French Cuisine</h2>
+                    <p>Order Plaisir & Delight pet food online today. Fast express delivery across Qatar with guaranteed fresh batches.</p>
+                    <a href="#products" class="cta-btn">Order Gourmet Pet Food 🛒</a>
                 </div>
             </div>
         </div>
@@ -275,8 +488,8 @@
     <!-- ===== NEWSLETTER SECTION ===== -->
     <section class="newsletter">
         <div class="newsletter-container reveal">
-            <h3>Stay in the Loop 🍧</h3>
-            <p>Subscribe for exclusive deals, new flavor drops, and behind-the-scenes scoops!</p>
+            <h3>Join the VIP Pet Club 🐾</h3>
+            <p>Subscribe for exclusive pet nutrition tips, special bundle promotions, and new product drops!</p>
             <div class="newsletter-form">
                 <input type="email" placeholder="Enter your email address" />
                 <button>Subscribe</button>
@@ -289,8 +502,8 @@
         <div class="footer-container">
             <div class="footer-top">
                 <div class="footer-brand">
-                    <span class="logo-text">ScoopLand</span>
-                    <p>Crafting happiness one scoop at a time since 2009. We believe life is sweeter with premium ice cream.</p>
+                    <span class="logo-text">Plaisir & Delight</span>
+                    <p>Distributed by <strong>Ras International Trading W.L.L</strong>. Bringing high-grade French pet gastronomy & veterinary care to pet parents across Qatar.</p>
                     <div class="footer-socials">
                         <a href="#" aria-label="Facebook">f</a>
                         <a href="#" aria-label="Instagram">ig</a>
@@ -300,44 +513,318 @@
                 </div>
 
                 <div class="footer-column">
-                    <h4>Quick Links</h4>
+                    <h4>Categories</h4>
                     <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#flavors">Flavors</a></li>
-                        <li><a href="#about">About Us</a></li>
-                        <li><a href="#reviews">Reviews</a></li>
+                        <li><a href="#products">Pouches in Gravy</a></li>
+                        <li><a href="#products">Dry Kibble</a></li>
+                        <li><a href="#products">Dog Chunks & Treats</a></li>
+                        <li><a href="#products">Cat Litter & Hygiene</a></li>
                     </ul>
                 </div>
 
                 <div class="footer-column">
-                    <h4>Support</h4>
+                    <h4>Support & Staff</h4>
                     <ul>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Shipping</a></li>
-                        <li><a href="#">Returns</a></li>
-                        <li><a href="#">Contact</a></li>
+                        <li><a href="#nutrition">Veterinary Info</a></li>
+                        <li><a href="#reviews">Delivery Policy</a></li>
+                        <li><a href="#" id="footerTrackBtn">Track Order 🚚</a></li>
+                        <li><a href="admin.html" target="_blank">Admin Dashboard 🔑</a></li>
                     </ul>
                 </div>
 
                 <div class="footer-column">
                     <h4>Contact Us</h4>
                     <ul>
-                        <li><a href="#">hello@scoopland.com</a></li>
-                        <li><a href="#">+1 (555) 234-5678</a></li>
-                        <li><a href="#">123 Cream Lane, NY</a></li>
+                        <li><a href="mailto:sales@rasqatar.com">sales@rasqatar.com</a></li>
+                        <li><a href="tel:+97477568080">+974 7756 8080</a></li>
+                        <li><a href="#">Ras International Trading W.L.L, Doha, Qatar</a></li>
                     </ul>
                 </div>
             </div>
 
             <div class="footer-bottom">
-                <span>&copy; 2024 ScoopLand. All rights reserved.</span>
-                <span>Made with ❤️ and lots of ice cream</span>
+                <span>&copy; 2026 Ras International Trading W.L.L / Plaisir & Delight. All rights reserved.</span>
+                <span>Crafted with ❤️ for happy, healthy pets</span>
             </div>
         </div>
     </footer>
 
-    <!-- ===== MINIMAL JS FOR INTERACTIONS ===== -->
-    <script src="script.js"></script>
+    <!-- ===== CART DRAWER ===== -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-drawer-header">
+            <h3>Your Cart 🐾</h3>
+            <button class="cart-close-btn" id="cartCloseBtn" aria-label="Close Cart">&times;</button>
+        </div>
+        <div class="cart-drawer-body" id="cartDrawerBody">
+            <div class="cart-empty-message">
+                <span class="empty-cart-icon">🛒</span>
+                <p>Your pet cart is empty.</p>
+                <p class="empty-sub">Add some gourmet pouches or kibbles to start!</p>
+            </div>
+        </div>
+        <div class="cart-drawer-footer" id="cartDrawerFooter" style="display: none;">
+            <div class="cart-summary-row">
+                <span>Subtotal</span>
+                <span id="cartSubtotal">QAR 0.00</span>
+            </div>
+            <div class="cart-summary-row">
+                <span>Delivery</span>
+                <span class="free-delivery">FREE (Orders &gt; QAR 50)</span>
+            </div>
+            <div class="cart-total-row">
+                <span>Total</span>
+                <span id="cartTotal">QAR 0.00</span>
+            </div>
+            <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout 💳</button>
+        </div>
+    </div>
+
+    <!-- ===== PET FOOD CUSTOMIZER MODAL ===== -->
+    <div class="modal-overlay" id="customizerModalOverlay">
+        <div class="customizer-modal" id="customizerModal">
+            <button class="modal-close-btn" id="customizerCloseBtn" aria-label="Close Customizer">&times;</button>
+            <div class="customizer-body">
+                <div class="customizer-preview">
+                    <div class="customizer-img-container">
+                        <img id="customizerImg" src="" alt="Product Preview">
+                    </div>
+                    <h3 id="customizerTitle">Product Name</h3>
+                    <p id="customizerDesc" class="customizer-desc">Product description goes here.</p>
+                </div>
+                <div class="customizer-options">
+                    <form id="customizerForm">
+                        <!-- Customizer Section 1: Package Size -->
+                        <div class="customizer-section">
+                            <span class="section-num">1</span>
+                            <h4>Select Pack Format</h4>
+                            <div class="customizer-grid size-grid">
+                                <label class="custom-option-card">
+                                    <input type="radio" name="flavorSize" value="box" checked data-price-add="0">
+                                    <div class="card-inner">
+                                        <span class="option-title">Standard Box (4x100g)</span>
+                                        <span class="option-badge">Base Price</span>
+                                    </div>
+                                </label>
+                                <label class="custom-option-card">
+                                    <input type="radio" name="flavorSize" value="single" data-price-add="-10.25">
+                                    <div class="card-inner">
+                                        <span class="option-title">Single Trial Pouch</span>
+                                        <span class="option-badge">QAR 3.75</span>
+                                    </div>
+                                </label>
+                                <label class="custom-option-card">
+                                    <input type="radio" name="flavorSize" value="carton" data-price-add="25.00">
+                                    <div class="card-inner">
+                                        <span class="option-title">12-Pack Value Carton</span>
+                                        <span class="option-badge">+QAR 25.00</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Customizer Section 2: Texture / Recipe Style -->
+                        <div class="customizer-section">
+                            <span class="section-num">2</span>
+                            <h4>Texture / Recipe Style</h4>
+                            <div class="customizer-grid vessel-grid">
+                                <label class="custom-option-card">
+                                    <input type="radio" name="flavorVessel" value="Chunks in Gravy" checked>
+                                    <div class="card-inner">
+                                        <span class="option-title">Chunks in Gravy 🥫</span>
+                                    </div>
+                                </label>
+                                <label class="custom-option-card">
+                                    <input type="radio" name="flavorVessel" value="Velvety Jelly">
+                                    <div class="card-inner">
+                                        <span class="option-title">Velvety Jelly 🥣</span>
+                                    </div>
+                                </label>
+                                <label class="custom-option-card">
+                                    <input type="radio" name="flavorVessel" value="Fine Paté Mousse">
+                                    <div class="card-inner">
+                                        <span class="option-title">Fine Paté Mousse ✨</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Customizer Section 3: Nutrition Addons -->
+                        <div class="customizer-section">
+                            <span class="section-num">3</span>
+                            <h4>Add Health Boosters & Treats</h4>
+                            <div class="toppings-list">
+                                <label class="topping-item">
+                                    <input type="checkbox" name="flavorToppings" value="Wild Salmon Oil Drizzle" data-price-add="3.00">
+                                    <span class="checkbox-custom"></span>
+                                    <span class="topping-name">Wild Salmon Oil Drizzle</span>
+                                    <span class="topping-price">+QAR 3.00</span>
+                                </label>
+                                <label class="topping-item">
+                                    <input type="checkbox" name="flavorToppings" value="Organic Catnip Treat" data-price-add="4.00">
+                                    <span class="checkbox-custom"></span>
+                                    <span class="topping-name">Organic Catnip Treat</span>
+                                    <span class="topping-price">+QAR 4.00</span>
+                                </label>
+                                <label class="topping-item">
+                                    <input type="checkbox" name="flavorToppings" value="Dental Health Bites" data-price-add="2.50">
+                                    <span class="checkbox-custom"></span>
+                                    <span class="topping-name">Dental Health Bites</span>
+                                    <span class="topping-price">+QAR 2.50</span>
+                                </label>
+                                <label class="topping-item">
+                                    <input type="checkbox" name="flavorToppings" value="Digestive Probiotics" data-price-add="3.50">
+                                    <span class="checkbox-custom"></span>
+                                    <span class="topping-name">Digestive Probiotics</span>
+                                    <span class="topping-price">+QAR 3.50</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="customizer-footer">
+                            <div class="live-price-box">
+                                <span class="price-lbl">Total Price</span>
+                                <span class="price-val" id="customizerLivePrice">QAR 0.00</span>
+                            </div>
+                            <button type="submit" class="confirm-add-btn">Add to Cart 🐾</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== CHECKOUT MODAL ===== -->
+    <div class="modal-overlay" id="checkoutModalOverlay">
+        <div class="checkout-modal" id="checkoutModal">
+            <button class="modal-close-btn" id="modalCloseBtn" aria-label="Close Modal">&times;</button>
+            
+            <!-- Step 1: Form -->
+            <div class="checkout-step active" id="checkoutFormStep">
+                <h3>Delivery Details 🚚</h3>
+                <form id="checkoutForm">
+                    <div class="form-group">
+                        <label for="custName">Pet Parent Full Name</label>
+                        <input type="text" id="custName" required placeholder="e.g. Fatima Al-Kuwari">
+                    </div>
+                    <div class="form-group">
+                        <label for="custPhone">Qatar Phone Number</label>
+                        <input type="tel" id="custPhone" required placeholder="+974 7756 8080">
+                    </div>
+                    <div class="form-group">
+                        <label for="custAddress">Delivery Address (Zone / Street / Villa / Apartment)</label>
+                        <textarea id="custAddress" required placeholder="Zone 66, West Bay Lagoon, Villa 12, Doha, Qatar"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="custNotes">Special Instructions (e.g. Ring bell, leave with security)</label>
+                        <input type="text" id="custNotes" placeholder="e.g. Ring bell, urgent cat food order">
+                    </div>
+                    <button type="submit" class="submit-order-btn">Place Pet Food Order 🐾</button>
+                </form>
+            </div>
+
+            <!-- Step 2: Tracker -->
+            <div class="checkout-step" id="checkoutTrackerStep">
+                <h3>Order Status 🐾</h3>
+                <div class="order-tracker">
+                    <div class="tracker-steps">
+                        <div class="tracker-step active" id="trackStep1">
+                            <div class="step-num">✓</div>
+                            <div class="step-label">Ordered</div>
+                        </div>
+                        <div class="tracker-step" id="trackStep2">
+                            <div class="step-num">2</div>
+                            <div class="step-label">Packing</div>
+                        </div>
+                        <div class="tracker-step" id="trackStep3">
+                            <div class="step-num">3</div>
+                            <div class="step-label">On the Way</div>
+                        </div>
+                        <div class="tracker-step" id="trackStep4">
+                            <div class="step-num">4</div>
+                            <div class="step-label">Delivered</div>
+                        </div>
+                    </div>
+                    <div class="tracker-progress">
+                        <div class="tracker-progress-bar" id="trackerProgressBar"></div>
+                    </div>
+                </div>
+
+                <div class="tracker-status-details">
+                    <div class="tracker-animation" id="trackerAnimation">
+                        <span class="animated-icon spinner">⏳</span>
+                    </div>
+                    <h4 id="trackerStatusTitle">We've received your pet food order!</h4>
+                    <p id="trackerStatusDesc">Our team at Ras International Trading is packing your fresh gourmet boxes now.</p>
+                </div>
+                
+                <button class="close-tracker-btn" id="closeTrackerBtn" style="display: none;">Back to Store 🏠</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TRACK ORDER MODAL ===== -->
+    <div class="modal-overlay" id="trackOrderModalOverlay">
+        <div class="checkout-modal" id="trackOrderModal">
+            <button class="modal-close-btn" id="trackOrderCloseBtn" aria-label="Close Modal">&times;</button>
+            
+            <!-- Step 1: Look up Form -->
+            <div class="checkout-step active" id="trackLookupStep">
+                <h3>Track Your Order 🚚</h3>
+                <form id="trackLookupForm">
+                    <div class="form-group">
+                        <label for="trackOrderIdInput">Enter Order ID</label>
+                        <input type="text" id="trackOrderIdInput" required placeholder="e.g. PL-12345678">
+                    </div>
+                    <button type="submit" class="submit-order-btn">Track Order 🐾</button>
+                </form>
+                <div id="trackLookupError" style="color: var(--primary); font-size: 0.85rem; font-style: italic; margin-top: 15px; text-align: center; display: none;"></div>
+            </div>
+            
+            <!-- Step 2: Tracker Status -->
+            <div class="checkout-step" id="trackStatusStep">
+                <h3>Order Status 🐾</h3>
+                <div class="order-tracker">
+                    <div class="tracker-steps">
+                        <div class="tracker-step" id="trackStatusStep1">
+                            <div class="step-num">✓</div>
+                            <div class="step-label">Ordered</div>
+                        </div>
+                        <div class="tracker-step" id="trackStatusStep2">
+                            <div class="step-num">2</div>
+                            <div class="step-label">Packing</div>
+                        </div>
+                        <div class="tracker-step" id="trackStatusStep3">
+                            <div class="step-num">3</div>
+                            <div class="step-label">On the Way</div>
+                        </div>
+                        <div class="tracker-step" id="trackStatusStep4">
+                            <div class="step-num">4</div>
+                            <div class="step-label">Delivered</div>
+                        </div>
+                    </div>
+                    <div class="tracker-progress">
+                        <div class="tracker-progress-bar" id="trackStatusProgressBar"></div>
+                    </div>
+                </div>
+
+                <div class="tracker-status-details">
+                    <div class="tracker-animation" id="trackStatusAnimation">
+                        <span class="animated-icon spinner">⏳</span>
+                    </div>
+                    <h4 id="trackStatusTitle">We've received your order!</h4>
+                    <p id="trackStatusDesc">Preparing your fresh, delicious pet food order now.</p>
+                </div>
+                
+                <button class="close-tracker-btn" id="closeTrackStatusBtn" style="margin-top: 25px;">Back to Lookup ↩</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 3D ENGINE & JAVASCRIPT ===== -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="script.js?v=4"></script>
 
 </body>
+
 </html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plaisir & Delight - Pet Food Orders & Inventory Admin</title>
+    <link rel="stylesheet" href="style.css?v=3">
+</head>
+
+<body class="admin-body">
+
+    <!-- Floating Background Decorations -->
+    <div class="floating-decorations">
+        <div class="float-shape"></div>
+        <div class="float-shape"></div>
+        <div class="float-shape"></div>
+    </div>
+
+    <!-- ===== ADMIN NAVIGATION ===== -->
+    <nav class="navbar scrolled">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <div class="logo-icon">🐱</div>
+                <div class="logo-text-group">
+                    <span class="logo-text">Plaisir<span class="logo-accent">Admin</span></span>
+                    <span class="logo-sub">Store Manager</span>
+                </div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-cta">← Back to Pet Store</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ===== ADMIN HERO HEADER ===== -->
+    <header class="admin-header">
+        <div class="admin-header-container">
+            <h1>Pet Food Orders & Fulfillment Dashboard</h1>
+            <p>Real-time order management, warehouse dispatch metrics, and live customer order status updates.</p>
+        </div>
+    </header>
+
+    <!-- ===== METRICS OVERVIEW ===== -->
+    <section class="admin-metrics">
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon pink">💰</div>
+                <div class="metric-info">
+                    <span class="metric-label">Total Revenue</span>
+                    <h2 class="metric-value" id="revenueMetric">QAR 0.00</h2>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon mint">📋</div>
+                <div class="metric-info">
+                    <span class="metric-label">Total Orders</span>
+                    <h2 class="metric-value" id="ordersMetric">0</h2>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon yellow">🚚</div>
+                <div class="metric-info">
+                    <span class="metric-label">Active Orders</span>
+                    <h2 class="metric-value" id="activeMetric">0</h2>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon pink">🐟</div>
+                <div class="metric-info">
+                    <span class="metric-label">Top Selling Item</span>
+                    <h2 class="metric-value" id="topFlavorMetric">Plaisir Salmon</h2>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== ORDERS MANAGEMENT ===== -->
+    <main class="admin-main">
+        <div class="admin-container">
+            <div class="orders-section-header">
+                <h3>Live Customer Orders</h3>
+                
+                <!-- Filters and Search -->
+                <div class="admin-filter-controls">
+                    <div class="search-wrapper">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="orderSearch" placeholder="Search customer, phone, or ID...">
+                    </div>
+                    <div class="filter-pills" id="adminFilterPills">
+                        <button class="filter-pill active" data-filter="all">All</button>
+                        <button class="filter-pill" data-filter="Ordered">Ordered</button>
+                        <button class="filter-pill" data-filter="Packing">Packing</button>
+                        <button class="filter-pill" data-filter="On the Way">On the Way</button>
+                        <button class="filter-pill" data-filter="Delivered">Delivered</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Table Container -->
+            <div class="orders-table-wrapper">
+                <table class="orders-table" id="ordersTable">
+                    <thead>
+                        <tr>
+                            <th>Order ID & Time</th>
+                            <th>Customer & Address</th>
+                            <th>Items & Nutrition Addons</th>
+                            <th>Total (QAR)</th>
+                            <th>Fulfillment Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        <!-- Dynamically populated -->
+                    </tbody>
+                </table>
+                <div id="ordersEmptyState" style="display: none; padding: 40px; text-align: center; color: var(--gray);">
+                    <p>No pet food orders matching your filter criteria.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="admin.js?v=3"></script>
+</body>
+
+</html>
