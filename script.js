@@ -63,8 +63,7 @@ const floatingIngredients = document.querySelectorAll('.floating-ingredient');
 
 // Three.js Scene Variables
 let scene, camera, renderer;
-let mainProductGroup, boxMesh, pouchMesh, shadowMesh, particleGroup;
-let pouchFrontMaterial, pouchBackMaterial, foilMaterial;
+let mainProductGroup, boxGroup, standingPouchGroup, shadowMesh, particleGroup;
 let keyLight, fillLight, rimLight, spotLight;
 
 // Physics & Animation State
@@ -96,6 +95,267 @@ let dragVelocityY = 0;
 
 const lerp = (start, end, factor) => start + (end - start) * factor;
 
+// Helper: Normalize UVs on any ShapeGeometry so textures map exactly [0, 1] without distortion
+function normalizeShapeUVs(geometry, width, height, offsetX = 0, offsetY = 0) {
+    const pos = geometry.attributes.position;
+    const uvs = [];
+    for (let i = 0; i < pos.count; i++) {
+        const u = ((pos.getX(i) + offsetX) + width / 2) / width;
+        const v = ((pos.getY(i) + offsetY) + height / 2) / height;
+        uvs.push(Math.max(0, Math.min(1, u)), Math.max(0, Math.min(1, v)));
+    }
+    geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+}
+
+// Helper: Create a contoured 3D Pouch with metallic foil edge bezel
+function createPouch(frontTex, backTex, foilTex, width = 1.62, height = 2.38, depth = 0.06) {
+    const group = new THREE.Group();
+    const w = width, h = height, r = 0.12;
+
+    const shape = new THREE.Shape();
+    shape.moveTo(-w / 2 + r, -h / 2);
+    shape.lineTo(w / 2 - r, -h / 2);
+    shape.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + r);
+    shape.lineTo(w / 2, h / 2 - r);
+    shape.quadraticCurveTo(w / 2, h / 2, w / 2 - r, h / 2);
+    shape.lineTo(-w / 2 + r, h / 2);
+    shape.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - r);
+    shape.lineTo(-w / 2, -h / 2 + r);
+    shape.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + r, -h / 2);
+
+    const frontGeo = new THREE.ShapeGeometry(shape, 32);
+    normalizeShapeUVs(frontGeo, w, h);
+
+    const backGeo = new THREE.ShapeGeometry(shape, 32);
+    normalizeShapeUVs(backGeo, w, h);
+
+    const bodyGeo = new THREE.ExtrudeGeometry(shape, {
+        depth: depth,
+        bevelEnabled: true,
+        bevelSegments: 3,
+        steps: 1,
+        bevelSize: 0.015,
+        bevelThickness: 0.015
+    });
+
+    const frontMat = new THREE.MeshStandardMaterial({
+        map: frontTex,
+        roughness: 0.22,
+        metalness: 0.25
+    });
+
+    const backMat = new THREE.MeshStandardMaterial({
+        map: backTex,
+        roughness: 0.3,
+        metalness: 0.18
+    });
+
+    const foilMat = new THREE.MeshStandardMaterial({
+        map: foilTex,
+        roughness: 0.15,
+        metalness: 0.85,
+        color: 0xE6E6E6
+    });
+
+    // Foil Edge Body
+    const bodyMesh = new THREE.Mesh(bodyGeo, foilMat);
+    bodyMesh.position.z = -depth / 2;
+    bodyMesh.castShadow = true;
+    bodyMesh.receiveShadow = true;
+    group.add(bodyMesh);
+
+    // Front Face
+    const frontMesh = new THREE.Mesh(frontGeo, frontMat);
+    frontMesh.position.z = depth / 2 + 0.016;
+    group.add(frontMesh);
+
+    // Back Face (rotated 180° around Y)
+    const backMesh = new THREE.Mesh(backGeo, backMat);
+    backMesh.rotation.y = Math.PI;
+    backMesh.position.z = -depth / 2 - 0.016;
+    group.add(backMesh);
+
+    group.userData = { frontMat, backMat, foilMat, frontMesh, backMesh, bodyMesh };
+    return group;
+}
+
+// Helper: Build the Retail Display Box Assembly
+function createDisplayBox(headerFrontTex, boxBackTex, sideTex, lipTex, insidePouchTex, backPouchTex, foilTex) {
+    const box = new THREE.Group();
+    const bw = 2.0, bh = 2.6, sDepth = 1.55, lipH = 0.65;
+
+    const purpleMat = new THREE.MeshStandardMaterial({
+        color: 0x380E6B,
+        roughness: 0.45,
+        metalness: 0.15
+    });
+
+    // 1. Back Wall & Arched Crest
+    const backShape = new THREE.Shape();
+    const archH = 0.5;
+    backShape.moveTo(-bw / 2, -bh / 2);
+    backShape.lineTo(bw / 2, -bh / 2);
+    backShape.lineTo(bw / 2, bh / 2 - archH);
+    backShape.quadraticCurveTo(bw / 2, bh / 2, 0, bh / 2 + 0.12);
+    backShape.quadraticCurveTo(-bw / 2, bh / 2, -bw / 2, bh / 2 - archH);
+    backShape.lineTo(-bw / 2, -bh / 2);
+
+    const backFrontGeo = new THREE.ShapeGeometry(backShape, 32);
+    normalizeShapeUVs(backFrontGeo, bw, bh);
+
+    const backRearGeo = new THREE.ShapeGeometry(backShape, 32);
+    normalizeShapeUVs(backRearGeo, bw, bh);
+
+    const backBodyGeo = new THREE.ExtrudeGeometry(backShape, {
+        depth: 0.03,
+        bevelEnabled: true,
+        bevelSegments: 2,
+        bevelSize: 0.008,
+        bevelThickness: 0.008
+    });
+
+    const headerFrontMat = new THREE.MeshStandardMaterial({
+        map: headerFrontTex,
+        roughness: 0.28,
+        metalness: 0.2
+    });
+
+    const boxBackMat = new THREE.MeshStandardMaterial({
+        map: boxBackTex,
+        roughness: 0.35,
+        metalness: 0.15
+    });
+
+    const backBodyMesh = new THREE.Mesh(backBodyGeo, purpleMat);
+    backBodyMesh.position.set(0, 0, -sDepth / 2 - 0.015);
+    box.add(backBodyMesh);
+
+    const backFrontMesh = new THREE.Mesh(backFrontGeo, headerFrontMat);
+    backFrontMesh.position.set(0, 0, -sDepth / 2 + 0.02);
+    box.add(backFrontMesh);
+
+    const backRearMesh = new THREE.Mesh(backRearGeo, boxBackMat);
+    backRearMesh.rotation.y = Math.PI;
+    backRearMesh.position.set(0, 0, -sDepth / 2 - 0.035);
+    box.add(backRearMesh);
+
+    // 2. Angled Side Walls (Left & Right)
+    const sideShape = new THREE.Shape();
+    const sBackH = 1.55, sFrontH = lipH;
+    sideShape.moveTo(-sDepth / 2, -bh / 2);
+    sideShape.lineTo(sDepth / 2, -bh / 2);
+    sideShape.lineTo(sDepth / 2, -bh / 2 + sFrontH);
+    sideShape.lineTo(-sDepth / 2 + 0.3, -bh / 2 + sBackH);
+    sideShape.lineTo(-sDepth / 2, -bh / 2 + sBackH);
+    sideShape.lineTo(-sDepth / 2, -bh / 2);
+
+    const sideGeo = new THREE.ShapeGeometry(sideShape, 16);
+    normalizeShapeUVs(sideGeo, sDepth, sBackH, 0, -bh / 2 + sBackH / 2);
+
+    const sideBodyGeo = new THREE.ExtrudeGeometry(sideShape, {
+        depth: 0.03,
+        bevelEnabled: true,
+        bevelSegments: 2,
+        bevelSize: 0.006,
+        bevelThickness: 0.006
+    });
+
+    const sideMat = new THREE.MeshStandardMaterial({
+        map: sideTex,
+        roughness: 0.32,
+        metalness: 0.18
+    });
+
+    // Left Side Wall
+    const leftSideGroup = new THREE.Group();
+    leftSideGroup.position.set(-bw / 2, 0, 0);
+    leftSideGroup.rotation.y = Math.PI / 2;
+
+    const leftSideMesh = new THREE.Mesh(sideGeo, sideMat);
+    leftSideMesh.position.z = 0.02;
+    leftSideMesh.rotation.y = Math.PI;
+    leftSideGroup.add(leftSideMesh);
+
+    const leftBodyMesh = new THREE.Mesh(sideBodyGeo, purpleMat);
+    leftSideGroup.add(leftBodyMesh);
+    box.add(leftSideGroup);
+
+    // Right Side Wall
+    const rightSideGroup = new THREE.Group();
+    rightSideGroup.position.set(bw / 2, 0, 0);
+    rightSideGroup.rotation.y = -Math.PI / 2;
+
+    const rightSideMesh = new THREE.Mesh(sideGeo, sideMat);
+    rightSideMesh.position.z = 0.02;
+    rightSideMesh.rotation.y = Math.PI;
+    rightSideGroup.add(rightSideMesh);
+
+    const rightBodyMesh = new THREE.Mesh(sideBodyGeo, purpleMat);
+    rightSideGroup.add(rightBodyMesh);
+    box.add(rightSideGroup);
+
+    // 3. Front Lip Panel
+    const lipShape = new THREE.Shape();
+    lipShape.moveTo(-bw / 2, -bh / 2);
+    lipShape.lineTo(bw / 2, -bh / 2);
+    lipShape.lineTo(bw / 2, -bh / 2 + lipH);
+    lipShape.lineTo(0.35, -bh / 2 + lipH);
+    lipShape.quadraticCurveTo(0, -bh / 2 + lipH - 0.22, -0.35, -bh / 2 + lipH);
+    lipShape.lineTo(-bw / 2, -bh / 2 + lipH);
+    lipShape.lineTo(-bw / 2, -bh / 2);
+
+    const lipGeo = new THREE.ShapeGeometry(lipShape, 24);
+    normalizeShapeUVs(lipGeo, bw, lipH, 0, -bh / 2 + lipH / 2);
+
+    const lipBodyGeo = new THREE.ExtrudeGeometry(lipShape, {
+        depth: 0.03,
+        bevelEnabled: true,
+        bevelSegments: 2,
+        bevelSize: 0.006,
+        bevelThickness: 0.006
+    });
+
+    const lipMat = new THREE.MeshStandardMaterial({
+        map: lipTex,
+        roughness: 0.28,
+        metalness: 0.2
+    });
+
+    const lipBodyMesh = new THREE.Mesh(lipBodyGeo, purpleMat);
+    lipBodyMesh.position.set(0, 0, sDepth / 2);
+    box.add(lipBodyMesh);
+
+    const lipFrontMesh = new THREE.Mesh(lipGeo, lipMat);
+    lipFrontMesh.position.set(0, 0, sDepth / 2 + 0.035);
+    box.add(lipFrontMesh);
+
+    // 4. Bottom Base
+    const bottomGeo = new THREE.BoxGeometry(bw, 0.03, sDepth);
+    const bottomMesh = new THREE.Mesh(bottomGeo, purpleMat);
+    bottomMesh.position.set(0, -bh / 2 + 0.015, 0);
+    box.add(bottomMesh);
+
+    // 5. Stack of 5 Standing Pouches Inside Box
+    const insidePouches = [];
+    const pouchCount = 5;
+    const startZ = -sDepth / 2 + 0.22;
+    const endZ = sDepth / 2 - 0.22;
+    const stepZ = (endZ - startZ) / (pouchCount - 1);
+
+    for (let i = 0; i < pouchCount; i++) {
+        const iPouch = createPouch(insidePouchTex, backPouchTex, foilTex, 1.45, 2.05, 0.04);
+        const zPos = startZ + i * stepZ;
+        const yPos = -bh / 2 + 1.05 + i * 0.02;
+        iPouch.position.set(0, yPos, zPos);
+        iPouch.rotation.x = -0.06;
+        box.add(iPouch);
+        insidePouches.push(iPouch);
+    }
+
+    box.userData = { insidePouches, headerFrontMat, boxBackMat, sideMat, lipMat };
+    return box;
+}
+
 // Initialize Three.js 3D Scene
 function initThree3DScene() {
     if (!hero3DCanvas || typeof THREE === 'undefined') return;
@@ -120,26 +380,26 @@ function initThree3DScene() {
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    // 3. Lighting Setup
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.15);
+    // 3. Studio Lighting Setup
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.1);
     scene.add(ambientLight);
 
-    keyLight = new THREE.DirectionalLight(0xffffff, 1.35);
-    keyLight.position.set(4, 6, 5);
+    keyLight = new THREE.DirectionalLight(0xffffff, 1.25);
+    keyLight.position.set(3.5, 5.5, 4.5);
     keyLight.castShadow = true;
     keyLight.shadow.mapSize.width = 1024;
     keyLight.shadow.mapSize.height = 1024;
     scene.add(keyLight);
 
-    fillLight = new THREE.DirectionalLight(0xFFB300, 0.65);
-    fillLight.position.set(-4, -2, 3);
+    fillLight = new THREE.DirectionalLight(0xE1BEE7, 0.45);
+    fillLight.position.set(-3.5, -1, 2.5);
     scene.add(fillLight);
 
-    rimLight = new THREE.PointLight(0xAB47BC, 2.8, 15);
-    rimLight.position.set(0, 3, -4);
+    rimLight = new THREE.PointLight(0xAB47BC, 2.2, 14);
+    rimLight.position.set(0, 3, -3.5);
     scene.add(rimLight);
 
-    spotLight = new THREE.SpotLight(0xffffff, 1.6, 16, Math.PI / 4, 0.4);
+    spotLight = new THREE.SpotLight(0xffffff, 1.2, 16, Math.PI / 4, 0.4);
     spotLight.position.set(0, 6, 5);
     spotLight.target.position.set(0, 0, 0);
     scene.add(spotLight);
@@ -157,90 +417,55 @@ function initThree3DScene() {
         return tex;
     };
 
-    const frontBoxTex = loadTex('box-front-display.png');
-    const backBoxTex = loadTex('box-back-display.png');
-    const sideBoxTex = loadTex('box-side-display.png');
-    const topBoxTex = loadTex('box-top-view.png');
-    const foilEdgeTex = loadTex('pouch-foil-edge.png');
-    const frontPouchTex = loadTex('pouch-salmon-perfect.png');
-    const backPouchTex = loadTex('pouch-back-perfect.png');
+    const frontSalmonTex = loadTex('pouch-front-salmon.png');
+    const backPouchTex = loadTex('pouch-back-art.png');
+    const foilEdgeTex = loadTex('foil-silver-spec.png');
+    const headerFrontTex = loadTex('box-header-front-art.png');
+    const boxBackTex = loadTex('box-back-art.png');
+    const boxSideTex = loadTex('box-side-art.png');
+    const boxLipTex = loadTex('box-front-lip-art.png');
 
-    // ----------------------------------------------------
-    // 5. BUILD SOLID VOLUMETRIC 3D DISPLAY BOX
-    // ----------------------------------------------------
-    const boxGeo = new THREE.BoxGeometry(2.1, 2.7, 1.4);
-    const boxSideMat = new THREE.MeshStandardMaterial({ map: sideBoxTex, roughness: 0.35, metalness: 0.15 });
-    const boxTopMat = new THREE.MeshStandardMaterial({ map: topBoxTex, roughness: 0.45, metalness: 0.1 });
-    const boxBottomMat = new THREE.MeshStandardMaterial({ color: 0x2A0845, roughness: 0.6, metalness: 0.1 });
-    const boxFrontMat = new THREE.MeshStandardMaterial({ map: frontBoxTex, roughness: 0.28, metalness: 0.2 });
-    const boxBackMat = new THREE.MeshStandardMaterial({ map: backBoxTex, roughness: 0.35, metalness: 0.15 });
+    // 5. Build True 3D Retail Display Box
+    boxGroup = createDisplayBox(
+        headerFrontTex,
+        boxBackTex,
+        boxSideTex,
+        boxLipTex,
+        frontSalmonTex,
+        backPouchTex,
+        foilEdgeTex
+    );
+    boxGroup.position.set(0.68, -0.05, -0.25);
+    mainProductGroup.add(boxGroup);
 
-    const boxMaterials = [
-        boxSideMat,   // Right (+X)
-        boxSideMat,   // Left (-X)
-        boxTopMat,    // Top (+Y)
-        boxBottomMat, // Bottom (-Y)
-        boxFrontMat,  // Front (+Z)
-        boxBackMat    // Back (-Z)
-    ];
+    // 6. Build True 3D Standing Front Pouch
+    standingPouchGroup = createPouch(frontSalmonTex, backPouchTex, foilEdgeTex, 1.62, 2.38, 0.06);
+    standingPouchGroup.position.set(-0.95, -0.15, 0.45);
+    standingPouchGroup.rotation.set(-0.02, -0.22, -0.03);
+    mainProductGroup.add(standingPouchGroup);
 
-    boxMesh = new THREE.Mesh(boxGeo, boxMaterials);
-    boxMesh.position.set(0.65, -0.02, -0.3);
-    boxMesh.castShadow = true;
-    boxMesh.receiveShadow = true;
-    mainProductGroup.add(boxMesh);
-
-    // ----------------------------------------------------
-    // 6. BUILD SOLID VOLUMETRIC 3D STANDING POUCH
-    // ----------------------------------------------------
-    const pouchGeo = new THREE.BoxGeometry(1.65, 2.38, 0.18);
-    pouchFrontMaterial = new THREE.MeshStandardMaterial({ map: frontPouchTex, roughness: 0.2, metalness: 0.3 });
-    pouchBackMaterial = new THREE.MeshStandardMaterial({ map: backPouchTex, roughness: 0.28, metalness: 0.18 });
-    foilMaterial = new THREE.MeshStandardMaterial({ map: foilEdgeTex, roughness: 0.15, metalness: 0.85 });
-
-    const pouchMaterials = [
-        foilMaterial,       // Right (+X)
-        foilMaterial,       // Left (-X)
-        foilMaterial,       // Top (+Y)
-        foilMaterial,       // Bottom (-Y)
-        pouchFrontMaterial, // Front (+Z)
-        pouchBackMaterial   // Back (-Z)
-    ];
-
-    pouchMesh = new THREE.Mesh(pouchGeo, pouchMaterials);
-    pouchMesh.position.set(-0.9, -0.15, 0.45);
-    pouchMesh.rotation.y = -0.2;
-    pouchMesh.rotation.z = -0.04;
-    pouchMesh.castShadow = true;
-    pouchMesh.receiveShadow = true;
-    mainProductGroup.add(pouchMesh);
-
-    // ----------------------------------------------------
-    // 7. DYNAMIC FLOOR SHADOW PLANE
-    // ----------------------------------------------------
+    // 7. Dynamic Floor Shadow Plane
     const shadowCanvas = document.createElement('canvas');
     shadowCanvas.width = 512;
     shadowCanvas.height = 512;
     const shadowCtx = shadowCanvas.getContext('2d');
     const shadowGrad = shadowCtx.createRadialGradient(256, 256, 0, 256, 256, 230);
-    shadowGrad.addColorStop(0, 'rgba(32, 16, 48, 0.55)');
+    shadowGrad.addColorStop(0, 'rgba(28, 12, 44, 0.6)');
     shadowGrad.addColorStop(0.45, 'rgba(74, 20, 140, 0.22)');
-    shadowGrad.addColorStop(0.8, 'rgba(74, 20, 140, 0.06)');
+    shadowGrad.addColorStop(0.8, 'rgba(74, 20, 140, 0.05)');
     shadowGrad.addColorStop(1, 'rgba(0,0,0,0)');
     shadowCtx.fillStyle = shadowGrad;
     shadowCtx.fillRect(0, 0, 512, 512);
 
     const shadowTex = new THREE.CanvasTexture(shadowCanvas);
-    const shadowGeo = new THREE.PlaneGeometry(5.8, 4.4);
+    const shadowGeo = new THREE.PlaneGeometry(6.2, 4.6);
     const shadowMat = new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, opacity: 0.85, depthWrite: false });
     shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
     shadowMesh.rotation.x = -Math.PI / 2;
     shadowMesh.position.y = -1.48;
     scene.add(shadowMesh);
 
-    // ----------------------------------------------------
-    // 8. 3D ORBITING SPARKLE STAR SYSTEM
-    // ----------------------------------------------------
+    // 8. 3D Orbiting Sparkle Star System
     particleGroup = new THREE.Group();
     const particleGeo = new THREE.SphereGeometry(0.045, 8, 8);
     const goldMat = new THREE.MeshStandardMaterial({ color: 0xFFD700, roughness: 0.2, metalness: 0.8, emissive: 0xFFA000, emissiveIntensity: 0.5 });
@@ -386,12 +611,20 @@ if (heroFlavorSwitch) {
             // 3D Flip burst animation
             targetRotY += 360;
 
-            // Load new pouch texture
+            // Load and apply new pouch texture to front standing pouch and inside box pouches
             textureLoader.load(newImg, (tex) => {
                 if (renderer) tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
-                if (pouchFrontMaterial) {
-                    pouchFrontMaterial.map = tex;
-                    pouchFrontMaterial.needsUpdate = true;
+                if (standingPouchGroup && standingPouchGroup.userData && standingPouchGroup.userData.frontMat) {
+                    standingPouchGroup.userData.frontMat.map = tex;
+                    standingPouchGroup.userData.frontMat.needsUpdate = true;
+                }
+                if (boxGroup && boxGroup.userData && boxGroup.userData.insidePouches) {
+                    boxGroup.userData.insidePouches.forEach(p => {
+                        if (p.userData && p.userData.frontMat) {
+                            p.userData.frontMat.map = tex;
+                            p.userData.frontMat.needsUpdate = true;
+                        }
+                    });
                 }
             });
 
